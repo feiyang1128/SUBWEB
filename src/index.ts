@@ -38,7 +38,7 @@ function generateSubUrl(data: Options) {
     newSubUrl += `&emoji=${data.emoji || 'false'}&append_type=${data.append_type || 'false'}&append_info=${data.append_info || 'false'}&scv=${data.scv || 'false'}&udp=${data.udp || 'false'}&list=${data.list || 'false'}&sort=${data.sort || 'false'}&fdn=${data.fdn || 'false'}&insert=${data.insert || 'false'}`;
     subUrl = newSubUrl;
     $('#result').val(subUrl);
-    copyText(subUrl);
+    // copyText(subUrl);
 }
 
 layui.use(['form'], () => {
