@@ -60,9 +60,6 @@ export const backendConfig = [{
     label: 'subapi.cmliussss.net(CM提供-负载均衡后端)',
     value: 'https://subapi.cmliussss.net/sub?'
 }, {
-    label: 'v.id9.cc(品云提供-稳定后端)',
-    value: 'https://v.id9.cc/sub?'
-}, {
     label: 'url.v1.mk(肥羊提供-增强型后端)',
     value: 'https://url.v1.mk/sub?'
 },  {
