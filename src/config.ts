@@ -54,6 +54,9 @@ export const targetConfig = [{
     value: 'loon'
 }];
 export const backendConfig = [{
+    label: 'subapi.feiyang.gq(Feiyang提供-后端)',
+    value: 'https://subapi.feiyang.gq/sub?'
+},{
     label: 'sub.d1.mk(肥羊提供-备用后端)',
     value: 'https://sub.d1.mk/sub?'
 },{
