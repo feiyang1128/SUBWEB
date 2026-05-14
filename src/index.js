@@ -768,7 +768,7 @@ async function checkBackendVersion(backend) {
         
         const controller = new AbortController();
         // Use a more forgiving timeout so slower backends still have a chance to pass detection
-        const timeoutMs = window.innerWidth < 768 ? 6000 : 10000;
+        const timeoutMs = 10000;
         const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
         
         const response = await fetch(versionUrl, {
@@ -983,27 +983,6 @@ async function initializeBackends() {
             backendHeaderSelect.disabled = false;
         } else {
             updateBackendList();
-            backendConfig.forEach(option => {
-                if (successfulBackends.some(backend => backend.value === option.value)) {
-                    return;
-                }
-
-                const exists = Array.from(backendHeaderSelect.options).some(opt => opt.value === option.value);
-                if (exists) {
-                    return;
-                }
-
-                const customOption = Array.from(backendHeaderSelect.options).find(opt => opt.value === 'custom');
-                const failedOpt = document.createElement('option');
-                failedOpt.value = option.value;
-                failedOpt.textContent = `${option.label} (检测失败)`;
-
-                if (customOption) {
-                    backendHeaderSelect.insertBefore(failedOpt, customOption);
-                } else {
-                    backendHeaderSelect.appendChild(failedOpt);
-                }
-            });
         }
     }
     
