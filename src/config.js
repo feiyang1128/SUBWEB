@@ -55,6 +55,10 @@ export const targetConfig = [{
 }];
 export const backendConfig = [
     {
+        label: 'Feiyang提供-增强型后端',
+        value: 'https://subapi.feiyang.gq/sub?'
+    }, 
+    {
         label: 'CM提供-负载均衡后端',
         value: 'https://subapi.cmliussss.net/sub?'
     }, {
