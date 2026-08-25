@@ -187,7 +187,15 @@ export const externalConfig = [{
         label: '本地GFW版',
         value: 'config/ACL4SSR_WithGFW.ini'
     }]
-}, {
+},                                
+{
+    label: 'Feiyang规则',
+    options: [{
+        label: '精简版-自动选择、负载均衡、AI、IPV6、cloudflare',
+        value: 'https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/feiyang_custom.ini'
+    }]
+},
+{
     label: '通用规则',
     options: [{
         label: '通用版-无测速',
