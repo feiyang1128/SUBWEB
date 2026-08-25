@@ -99,7 +99,7 @@ class ThemeManager {
 // Mobile Advanced Options Modal Management
 let mobileAdvancedOptions = {
     emoji: true,
-    append_type: true,
+    append_type: false,
     append_info: true,
     scv: false,
     udp: false,
