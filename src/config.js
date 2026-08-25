@@ -273,7 +273,7 @@ export const externalConfig = [
     label: "Feiyang规则",
     options: [
       {
-        label: "精简版-自动选择、负载均衡、AI、IPV6、cloudflare",
+        label: "智能精简版-自动选择、负载均衡、AI、IPV6、cloudflare",
         value:
           "https://gh-proxy.org/https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/feiyang_custom.ini",
       },
