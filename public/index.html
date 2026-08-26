@@ -193,9 +193,13 @@
                                         <input type="checkbox" id="append_info" name="append_info" checked class="mr-1 h-3 w-3">
                                         <i class="fas fa-info-circle text-green-500 dark:text-green-400 mr-1 text-xs"></i><span class="hidden sm:inline">信息节点</span><span class="sm:hidden text-xs">信息</span>
                                     </label>
-                                    <label class="flex items-center text-xs bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 px-1.5 sm:px-2 py-1 rounded cursor-pointer transition-colors relative tooltip-container" data-tooltip="跳过TLS验证">
-                                        <input type="checkbox" id="scv" name="scv" class="mr-1 h-3 w-3">
-                                        <i class="fas fa-shield-alt text-orange-500 dark:text-orange-400 mr-1 text-xs"></i><span class="hidden sm:inline">跳过TLS</span><span class="sm:hidden text-xs">TLS</span>
+                                    <label class="flex items-center text-xs bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 px-1.5 sm:px-2 py-1 rounded transition-colors relative tooltip-container" data-tooltip="TLS证书验证策略">
+                                        <i class="fas fa-shield-alt text-orange-500 dark:text-orange-400 mr-1 text-xs"></i>
+                                        <select id="scv" name="scv" class="bg-transparent text-xs focus:outline-none cursor-pointer">
+                                            <option value="">默认</option>
+                                            <option value="true">跳过TLS</option>
+                                            <option value="false">验证TLS</option>
+                                        </select>
                                     </label>
                                     <label class="flex items-center text-xs bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/70 dark:hover:bg-indigo-800/80 text-gray-700 dark:text-gray-200 px-1.5 sm:px-2 py-1 rounded cursor-pointer transition-colors relative tooltip-container" data-tooltip="启用UDP">
                                         <input type="checkbox" id="udp" name="udp" class="mr-1 h-3 w-3">
@@ -432,14 +436,16 @@
                     </div>
                 </div>
                 
-                <div class="mobile-option-card flex items-center justify-center text-sm bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 px-3 py-3 rounded-xl cursor-pointer transition-colors border-2 border-transparent" data-option="scv">
-                    <div class="flex flex-col items-center space-y-2 pointer-events-none">
-                        <div class="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center">
-                            <i class="fas fa-shield-alt text-orange-500 dark:text-orange-400"></i>
-                        </div>
-                        <span class="font-medium">TLS</span>
+                <label class="flex flex-col items-center justify-center text-sm bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 px-3 py-3 rounded-xl transition-colors border-2 border-transparent">
+                    <div class="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center mb-2">
+                        <i class="fas fa-shield-alt text-orange-500 dark:text-orange-400"></i>
                     </div>
-                </div>
+                    <select id="mobileScv" class="w-full bg-transparent text-sm font-medium text-center focus:outline-none cursor-pointer">
+                        <option value="">TLS默认</option>
+                        <option value="true">跳过TLS</option>
+                        <option value="false">验证TLS</option>
+                    </select>
+                </label>
                 
                 <div class="mobile-option-card flex items-center justify-center text-sm bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/70 dark:hover:bg-indigo-800/80 text-gray-700 dark:text-gray-200 px-3 py-3 rounded-xl cursor-pointer transition-colors border-2 border-transparent" data-option="udp">
                     <div class="flex flex-col items-center space-y-2 pointer-events-none">

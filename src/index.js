@@ -101,7 +101,6 @@ let mobileAdvancedOptions = {
     emoji: true,
     append_type: false,
     append_info: true,
-    scv: false,
     udp: false,
     list: false,
     sort: false,
@@ -110,7 +109,8 @@ let mobileAdvancedOptions = {
 };
 
 function updateMobileAdvancedButton() {
-    const selectedCount = Object.values(mobileAdvancedOptions).filter(val => val).length;
+    const tlsPolicy = document.getElementById('scv')?.value || document.getElementById('mobileScv')?.value;
+    const selectedCount = Object.values(mobileAdvancedOptions).filter(val => val).length + (tlsPolicy ? 1 : 0);
     const toggleText = document.getElementById('advancedToggleText');
     if (toggleText) {
         toggleText.textContent = selectedCount > 0 ? `高级选项 (${selectedCount})` : '高级选项';
@@ -119,13 +119,20 @@ function updateMobileAdvancedButton() {
 
 function syncMobileAdvancedOptions() {
     // Sync from desktop checkboxes to mobile modal
-    const desktopOptions = ['emoji', 'append_type', 'append_info', 'scv', 'udp', 'list', 'sort', 'fdn', 'insert'];
+    const desktopOptions = ['emoji', 'append_type', 'append_info', 'udp', 'list', 'sort', 'fdn', 'insert'];
     desktopOptions.forEach(option => {
         const desktopCheckbox = document.getElementById(option);
         if (desktopCheckbox) {
             mobileAdvancedOptions[option] = desktopCheckbox.checked;
         }
     });
+
+    const desktopScv = document.getElementById('scv');
+    const mobileScv = document.getElementById('mobileScv');
+    if (desktopScv && mobileScv) {
+        mobileScv.value = desktopScv.value;
+    }
+
     updateMobileAdvancedModal();
     updateMobileAdvancedButton();
 }
@@ -152,6 +159,12 @@ function applyMobileAdvancedOptions() {
             desktopCheckbox.checked = mobileAdvancedOptions[option];
         }
     });
+
+    const desktopScv = document.getElementById('scv');
+    const mobileScv = document.getElementById('mobileScv');
+    if (desktopScv && mobileScv) {
+        desktopScv.value = mobileScv.value;
+    }
 }
 
 function handleMobileAdvancedToggle(optionName) {
@@ -551,7 +564,7 @@ function handleFormSubmit(event) {
         emoji: formData.get('emoji') === 'on' ? 'true' : 'false',
         append_type: formData.get('append_type') === 'on' ? 'true' : 'false',
         append_info: formData.get('append_info') === 'on' ? 'true' : 'false',
-        scv: formData.get('scv') === 'on' ? 'true' : '',
+        scv: ['true', 'false'].includes(formData.get('scv')) ? formData.get('scv') : '',
         udp: formData.get('udp') === 'on' ? 'true' : 'false',
         list: formData.get('list') === 'on' ? 'true' : 'false',
         sort: formData.get('sort') === 'on' ? 'true' : 'false',
@@ -702,7 +715,7 @@ function handleClashQrCode() {
         emoji: formData.get('emoji') === 'on' ? 'true' : 'false',
         append_type: formData.get('append_type') === 'on' ? 'true' : 'false',
         append_info: formData.get('append_info') === 'on' ? 'true' : 'false',
-        scv: formData.get('scv') === 'on' ? 'true' : '',
+        scv: ['true', 'false'].includes(formData.get('scv')) ? formData.get('scv') : '',
         udp: formData.get('udp') === 'on' ? 'true' : 'false',
         list: formData.get('list') === 'on' ? 'true' : 'false',
         sort: formData.get('sort') === 'on' ? 'true' : 'false',
@@ -1232,6 +1245,15 @@ $(document).ready(() => {
             }
         });
     });
+
+    const mobileScv = document.getElementById('mobileScv');
+    const desktopScv = document.getElementById('scv');
+    if (mobileScv && desktopScv) {
+        mobileScv.addEventListener('change', () => {
+            desktopScv.value = mobileScv.value;
+            updateMobileAdvancedButton();
+        });
+    }
 
     // Close modal when clicking outside
     if (mobileAdvancedModal) {
