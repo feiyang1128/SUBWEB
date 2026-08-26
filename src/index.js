@@ -340,6 +340,25 @@ function copyText(copyStr) {
     });
 }
 
+function buildAdvancedParams(data) {
+    const params = [
+        ['emoji', data.emoji || 'false'],
+        ['append_type', data.append_type || 'false'],
+        ['append_info', data.append_info || 'false'],
+        ['udp', data.udp || 'false'],
+        ['list', data.list || 'false'],
+        ['sort', data.sort || 'false'],
+        ['fdn', data.fdn || 'false'],
+        ['insert', data.insert || 'false']
+    ];
+
+    if (data.scv) {
+        params.splice(3, 0, ['scv', data.scv]);
+    }
+
+    return params.map(([key, value]) => `&${key}=${value}`).join('');
+}
+
 function generateSubUrl(data) {
     const backend = data.backend;
     let originUrl = data.url;
@@ -363,7 +382,7 @@ function generateSubUrl(data) {
         newSubUrl += `&filename=${encodeURIComponent(data.name)}`;
     }
 
-    newSubUrl += `&emoji=${data.emoji || 'false'}&append_type=${data.append_type || 'false'}&append_info=${data.append_info || 'false'}&scv=${data.scv || 'false'}&udp=${data.udp || 'false'}&list=${data.list || 'false'}&sort=${data.sort || 'false'}&fdn=${data.fdn || 'false'}&insert=${data.insert || 'false'}`;
+    newSubUrl += buildAdvancedParams(data);
     subUrl = newSubUrl;
     $('#result').val(subUrl);
     
@@ -532,7 +551,7 @@ function handleFormSubmit(event) {
         emoji: formData.get('emoji') === 'on' ? 'true' : 'false',
         append_type: formData.get('append_type') === 'on' ? 'true' : 'false',
         append_info: formData.get('append_info') === 'on' ? 'true' : 'false',
-        scv: formData.get('scv') === 'on' ? 'true' : 'false',
+        scv: formData.get('scv') === 'on' ? 'true' : '',
         udp: formData.get('udp') === 'on' ? 'true' : 'false',
         list: formData.get('list') === 'on' ? 'true' : 'false',
         sort: formData.get('sort') === 'on' ? 'true' : 'false',
@@ -683,7 +702,7 @@ function handleClashQrCode() {
         emoji: formData.get('emoji') === 'on' ? 'true' : 'false',
         append_type: formData.get('append_type') === 'on' ? 'true' : 'false',
         append_info: formData.get('append_info') === 'on' ? 'true' : 'false',
-        scv: formData.get('scv') === 'on' ? 'true' : 'false',
+        scv: formData.get('scv') === 'on' ? 'true' : '',
         udp: formData.get('udp') === 'on' ? 'true' : 'false',
         list: formData.get('list') === 'on' ? 'true' : 'false',
         sort: formData.get('sort') === 'on' ? 'true' : 'false',
@@ -714,7 +733,7 @@ function handleClashQrCode() {
         newSubUrl += `&filename=${encodeURIComponent(data.name)}`;
     }
 
-    newSubUrl += `&emoji=${data.emoji || 'false'}&append_type=${data.append_type || 'false'}&append_info=${data.append_info || 'false'}&scv=${data.scv || 'false'}&udp=${data.udp || 'false'}&list=${data.list || 'false'}&sort=${data.sort || 'false'}&fdn=${data.fdn || 'false'}&insert=${data.insert || 'false'}`;
+    newSubUrl += buildAdvancedParams(data);
     
     subUrl = newSubUrl;
     
