@@ -193,12 +193,12 @@
                                         <input type="checkbox" id="append_info" name="append_info" checked class="mr-1 h-3 w-3">
                                         <i class="fas fa-info-circle text-green-500 dark:text-green-400 mr-1 text-xs"></i><span class="hidden sm:inline">信息节点</span><span class="sm:hidden text-xs">信息</span>
                                     </label>
-                                    <label class="flex items-center text-xs bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 px-1.5 sm:px-2 py-1 rounded transition-colors relative tooltip-container" data-tooltip="TLS证书验证策略">
-                                        <i class="fas fa-shield-alt text-orange-500 dark:text-orange-400 mr-1 text-xs"></i>
-                                        <select id="scv" name="scv" class="bg-transparent text-xs focus:outline-none cursor-pointer">
-                                            <option value="">默认</option>
-                                            <option value="true">跳过TLS</option>
-                                            <option value="false">验证TLS</option>
+                                    <label class="flex items-center gap-1.5 text-xs bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 pl-2 pr-1.5 py-1 rounded transition-colors relative tooltip-container min-w-[142px]" data-tooltip="保持原配置时不传scv，不强制写入证书验证字段">
+                                        <i class="fas fa-shield-alt text-orange-500 dark:text-orange-400 text-xs"></i>
+                                        <select id="scv" name="scv" class="flex-1 min-w-0 bg-white/70 dark:bg-orange-950/40 border border-orange-200/70 dark:border-orange-700/70 rounded px-1.5 py-0.5 pr-5 text-xs text-gray-700 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-orange-400 cursor-pointer">
+                                            <option value="">保持TLS原配置</option>
+                                            <option value="true">跳过证书验证</option>
+                                            <option value="false">启用证书验证</option>
                                         </select>
                                     </label>
                                     <label class="flex items-center text-xs bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/70 dark:hover:bg-indigo-800/80 text-gray-700 dark:text-gray-200 px-1.5 sm:px-2 py-1 rounded cursor-pointer transition-colors relative tooltip-container" data-tooltip="启用UDP">
@@ -436,15 +436,18 @@
                     </div>
                 </div>
                 
-                <label class="flex flex-col items-center justify-center text-sm bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 px-3 py-3 rounded-xl transition-colors border-2 border-transparent">
-                    <div class="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center mb-2">
+                <label class="col-span-2 flex items-center gap-3 text-sm bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 px-3 py-3 rounded-xl transition-colors border-2 border-transparent">
+                    <div class="w-9 h-9 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-shield-alt text-orange-500 dark:text-orange-400"></i>
                     </div>
-                    <select id="mobileScv" class="w-full bg-transparent text-sm font-medium text-center focus:outline-none cursor-pointer">
-                        <option value="">TLS默认</option>
-                        <option value="true">跳过TLS</option>
-                        <option value="false">验证TLS</option>
-                    </select>
+                    <div class="min-w-0 flex-1">
+                        <div class="font-medium mb-1">TLS验证策略</div>
+                        <select id="mobileScv" class="w-full bg-white/80 dark:bg-orange-950/40 border border-orange-200/80 dark:border-orange-700/80 rounded-lg px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-400 cursor-pointer">
+                            <option value="">保持原配置</option>
+                            <option value="true">跳过证书验证</option>
+                            <option value="false">启用证书验证</option>
+                        </select>
+                    </div>
                 </label>
                 
                 <div class="mobile-option-card flex items-center justify-center text-sm bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/70 dark:hover:bg-indigo-800/80 text-gray-700 dark:text-gray-200 px-3 py-3 rounded-xl cursor-pointer transition-colors border-2 border-transparent" data-option="udp">
