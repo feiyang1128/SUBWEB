@@ -195,11 +195,14 @@
                                     </label>
                                     <label class="flex items-center text-xs bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 px-2 py-1 rounded cursor-pointer transition-colors relative tooltip-container" data-tooltip="保持TLS原配置时不传scv，不强制写入证书验证字段">
                                         <i class="fas fa-shield-alt text-orange-500 dark:text-orange-400 mr-1 text-xs"></i><span class="whitespace-nowrap">TLS验证</span>
-                                        <select id="scv" name="scv" class="ml-1 bg-transparent text-xs font-medium text-gray-700 dark:text-gray-100 focus:outline-none cursor-pointer">
-                                            <option value="">保持TLS原配置</option>
-                                            <option value="true">跳过证书验证</option>
-                                            <option value="false">启用证书验证</option>
-                                        </select>
+                                        <span class="relative inline-flex items-center ml-1">
+                                            <select id="scv" name="scv" class="tls-policy-select">
+                                                <option value="">保持TLS原配置</option>
+                                                <option value="true">跳过证书验证</option>
+                                                <option value="false">启用证书验证</option>
+                                            </select>
+                                            <i class="fas fa-chevron-down pointer-events-none absolute right-1.5 text-[10px] text-orange-500 dark:text-orange-300"></i>
+                                        </span>
                                     </label>
                                     <label class="flex items-center text-xs bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/70 dark:hover:bg-indigo-800/80 text-gray-700 dark:text-gray-200 px-1.5 sm:px-2 py-1 rounded cursor-pointer transition-colors relative tooltip-container" data-tooltip="启用UDP">
                                         <input type="checkbox" id="udp" name="udp" class="mr-1 h-3 w-3">

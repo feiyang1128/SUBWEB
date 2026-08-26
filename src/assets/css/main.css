@@ -158,63 +158,61 @@
     }
 }
 
-/* Enhanced select dropdown with mobile performance optimization */
+/* Enhanced select dropdowns */
 .select-enhanced {
     @apply relative;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-/* Only enable hover effects on desktop */
-@media (min-width: 640px) {
-    .select-enhanced:hover {
-        transform: translateY(-1px);
-    }
 }
 
 .select-enhanced select {
-    @apply w-full px-4 py-3 pr-12 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium transition-all duration-200 appearance-none cursor-pointer hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-gray-50 dark:focus:bg-gray-600 focus:shadow-lg;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    @apply w-full appearance-none cursor-pointer border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 font-medium shadow-sm transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1.5rem;
+    background-position: right 0.9rem center;
+    background-size: 1rem;
+}
+
+.dark .select-enhanced select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23CBD5E1' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
 .select-enhanced select:focus {
-    @apply transform scale-[1.02];
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' viewBox='0 0 24 24' fill='none' stroke='%236366F1' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236366F1' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
-/* Dropdown open state */
-.select-enhanced select:active {
-    @apply ring-2 ring-primary-300 bg-gray-50;
+@media (min-width: 640px) {
+    .select-enhanced select {
+        @apply rounded-lg bg-white/95 dark:bg-gray-800/95;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    }
+
+    .select-enhanced select:hover {
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    }
 }
 
-/* Custom styling for select options */
-.select-enhanced select option {
-    @apply px-4 py-3 text-gray-700 dark:text-gray-200;
+/* Native option styling is browser-limited, but this covers supported engines. */
+.select-enhanced select option,
+.tls-policy-select option {
+    @apply text-gray-700 dark:text-gray-100;
     background-color: white;
 }
 
-.select-enhanced select option:is(.dark *) {
-    background-color: rgb(55 65 81);
+.dark .select-enhanced select option,
+.dark .tls-policy-select option {
+    background-color: rgb(31 41 55);
 }
 
-.select-enhanced select option:hover {
-    @apply bg-primary-50 dark:bg-gray-600 text-primary-700 dark:text-gray-100;
+.select-enhanced select option:checked,
+.tls-policy-select option:checked {
+    @apply font-medium;
 }
 
-.select-enhanced select option:checked {
-    @apply bg-primary-100 dark:bg-gray-500 text-primary-800 dark:text-gray-100 font-medium;
+.tls-policy-select {
+    @apply appearance-none w-[118px] rounded-md border border-orange-200/80 dark:border-orange-700/80 bg-white/80 dark:bg-orange-950/40 py-0.5 pl-2 pr-6 text-xs font-medium leading-5 text-gray-700 dark:text-gray-100 shadow-sm transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400;
 }
 
-.select-enhanced select optgroup {
-    @apply font-bold text-gray-900 dark:text-gray-200 bg-gray-50 dark:bg-gray-600 border-b border-gray-200 dark:border-gray-500;
-    padding: 0.75rem 0 0.5rem 0;
-}
-
-.select-enhanced select optgroup option {
-    @apply ml-4 dark:bg-gray-700;
-    padding: 0.5rem 1rem;
+.tls-policy-select:hover {
+    @apply border-orange-300 dark:border-orange-600 bg-white dark:bg-orange-950/60;
 }
 
 /* Floating label for selects */
@@ -229,37 +227,6 @@
 .select-floating select:focus + label,
 .select-floating select:not(:placeholder-shown) + label {
     @apply -top-2 left-3 text-xs text-primary-600 dark:text-primary-400 bg-white dark:bg-gray-700 px-2;
-}
-
-/* Custom dropdown arrow animation */
-@keyframes dropdown-arrow {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(2px); }
-}
-
-.select-enhanced:hover::after {
-    animation: dropdown-arrow 0.5s ease-in-out infinite;
-}
-
-/* Select focus glow effect */
-.select-enhanced::before {
-    content: '';
-    @apply absolute inset-0 rounded-xl bg-primary-500 opacity-0 transition-opacity duration-200 pointer-events-none;
-    z-index: -1;
-}
-
-.select-enhanced select:focus ~ .select-enhanced::before {
-    @apply opacity-10;
-}
-
-/* Dropdown icon rotation on open */
-@keyframes rotate-chevron {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(180deg); }
-}
-
-.select-enhanced select:focus {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6 animate-spin' style='animation-duration: 0.3s; animation-direction: reverse;' viewBox='0 0 24 24' fill='none' stroke='%236366F1' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
 /* Custom utilities */
