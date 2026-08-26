@@ -109,7 +109,8 @@ let mobileAdvancedOptions = {
 };
 
 function updateMobileAdvancedButton() {
-    const tlsPolicy = document.getElementById('scv')?.value || document.getElementById('mobileScv')?.value;
+    const checkedScv = document.querySelector('input[name="scv"]:checked');
+    const tlsPolicy = checkedScv?.value || document.getElementById('mobileScv')?.value;
     const selectedCount = Object.values(mobileAdvancedOptions).filter(val => val).length + (tlsPolicy ? 1 : 0);
     const toggleText = document.getElementById('advancedToggleText');
     if (toggleText) {
@@ -127,7 +128,7 @@ function syncMobileAdvancedOptions() {
         }
     });
 
-    const desktopScv = document.getElementById('scv');
+    const desktopScv = document.querySelector('input[name="scv"]:checked');
     const mobileScv = document.getElementById('mobileScv');
     if (desktopScv && mobileScv) {
         mobileScv.value = desktopScv.value;
@@ -160,44 +161,22 @@ function applyMobileAdvancedOptions() {
         }
     });
 
-    const desktopScv = document.getElementById('scv');
     const mobileScv = document.getElementById('mobileScv');
-    if (desktopScv && mobileScv) {
-        desktopScv.value = mobileScv.value;
-    }
-}
-
-function getTlsPolicyLabel(value) {
-    switch (value) {
-        case 'true':
-            return '跳过证书验证';
-        case 'false':
-            return '启用证书验证';
-        default:
-            return '保持TLS原配置';
+    if (mobileScv) {
+        updateTlsPolicyUi(mobileScv.value);
     }
 }
 
 function updateTlsPolicyUi(value) {
-    const desktopScv = document.getElementById('scv');
     const mobileScv = document.getElementById('mobileScv');
-    const policyText = document.getElementById('tlsPolicyText');
-    const policyOptions = document.querySelectorAll('.tls-policy-option');
-
-    if (desktopScv) {
-        desktopScv.value = value;
-    }
+    const desktopScvOptions = document.querySelectorAll('input[name="scv"]');
 
     if (mobileScv) {
         mobileScv.value = value;
     }
 
-    if (policyText) {
-        policyText.textContent = getTlsPolicyLabel(value);
-    }
-
-    policyOptions.forEach(option => {
-        option.classList.toggle('is-selected', option.dataset.value === value);
+    desktopScvOptions.forEach(option => {
+        option.checked = option.value === value;
     });
 
     updateMobileAdvancedButton();
@@ -1283,39 +1262,20 @@ $(document).ready(() => {
     });
 
     const mobileScv = document.getElementById('mobileScv');
-    const desktopScv = document.getElementById('scv');
-    if (mobileScv && desktopScv) {
+    const desktopScvOptions = document.querySelectorAll('input[name="scv"]');
+    if (mobileScv && desktopScvOptions.length) {
         mobileScv.addEventListener('change', () => {
             updateTlsPolicyUi(mobileScv.value);
         });
     }
 
-    const tlsPolicyToggle = document.getElementById('tlsPolicyToggle');
-    const tlsPolicyMenu = document.getElementById('tlsPolicyMenu');
-    const tlsPolicyOptions = document.querySelectorAll('.tls-policy-option');
-    updateTlsPolicyUi(desktopScv ? desktopScv.value : '');
+    const checkedScv = document.querySelector('input[name="scv"]:checked');
+    updateTlsPolicyUi(checkedScv ? checkedScv.value : '');
 
-    if (tlsPolicyToggle && tlsPolicyMenu) {
-        tlsPolicyToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            tlsPolicyMenu.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!tlsPolicyMenu.contains(e.target) && !tlsPolicyToggle.contains(e.target)) {
-                tlsPolicyMenu.classList.add('hidden');
-            }
-        });
-    }
-
-    tlsPolicyOptions.forEach(option => {
-        option.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            updateTlsPolicyUi(option.dataset.value || '');
-            if (tlsPolicyMenu) {
-                tlsPolicyMenu.classList.add('hidden');
+    desktopScvOptions.forEach(option => {
+        option.addEventListener('change', () => {
+            if (option.checked) {
+                updateTlsPolicyUi(option.value);
             }
         });
     });
