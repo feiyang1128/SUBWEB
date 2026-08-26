@@ -167,6 +167,42 @@ function applyMobileAdvancedOptions() {
     }
 }
 
+function getTlsPolicyLabel(value) {
+    switch (value) {
+        case 'true':
+            return '跳过证书验证';
+        case 'false':
+            return '启用证书验证';
+        default:
+            return '保持TLS原配置';
+    }
+}
+
+function updateTlsPolicyUi(value) {
+    const desktopScv = document.getElementById('scv');
+    const mobileScv = document.getElementById('mobileScv');
+    const policyText = document.getElementById('tlsPolicyText');
+    const policyOptions = document.querySelectorAll('.tls-policy-option');
+
+    if (desktopScv) {
+        desktopScv.value = value;
+    }
+
+    if (mobileScv) {
+        mobileScv.value = value;
+    }
+
+    if (policyText) {
+        policyText.textContent = getTlsPolicyLabel(value);
+    }
+
+    policyOptions.forEach(option => {
+        option.classList.toggle('is-selected', option.dataset.value === value);
+    });
+
+    updateMobileAdvancedButton();
+}
+
 function handleMobileAdvancedToggle(optionName) {
     console.log('Toggling option:', optionName, 'from', mobileAdvancedOptions[optionName], 'to', !mobileAdvancedOptions[optionName]);
     mobileAdvancedOptions[optionName] = !mobileAdvancedOptions[optionName];
@@ -1250,10 +1286,39 @@ $(document).ready(() => {
     const desktopScv = document.getElementById('scv');
     if (mobileScv && desktopScv) {
         mobileScv.addEventListener('change', () => {
-            desktopScv.value = mobileScv.value;
-            updateMobileAdvancedButton();
+            updateTlsPolicyUi(mobileScv.value);
         });
     }
+
+    const tlsPolicyToggle = document.getElementById('tlsPolicyToggle');
+    const tlsPolicyMenu = document.getElementById('tlsPolicyMenu');
+    const tlsPolicyOptions = document.querySelectorAll('.tls-policy-option');
+    updateTlsPolicyUi(desktopScv ? desktopScv.value : '');
+
+    if (tlsPolicyToggle && tlsPolicyMenu) {
+        tlsPolicyToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            tlsPolicyMenu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!tlsPolicyMenu.contains(e.target) && !tlsPolicyToggle.contains(e.target)) {
+                tlsPolicyMenu.classList.add('hidden');
+            }
+        });
+    }
+
+    tlsPolicyOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            updateTlsPolicyUi(option.dataset.value || '');
+            if (tlsPolicyMenu) {
+                tlsPolicyMenu.classList.add('hidden');
+            }
+        });
+    });
 
     // Close modal when clicking outside
     if (mobileAdvancedModal) {

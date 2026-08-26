@@ -193,17 +193,20 @@
                                         <input type="checkbox" id="append_info" name="append_info" checked class="mr-1 h-3 w-3">
                                         <i class="fas fa-info-circle text-green-500 dark:text-green-400 mr-1 text-xs"></i><span class="hidden sm:inline">信息节点</span><span class="sm:hidden text-xs">信息</span>
                                     </label>
-                                    <label class="flex items-center text-xs bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 px-2 py-1 rounded cursor-pointer transition-colors relative tooltip-container" data-tooltip="保持TLS原配置时不传scv，不强制写入证书验证字段">
-                                        <i class="fas fa-shield-alt text-orange-500 dark:text-orange-400 mr-1 text-xs"></i><span class="whitespace-nowrap">TLS验证</span>
-                                        <span class="relative inline-flex items-center ml-1">
-                                            <select id="scv" name="scv" class="tls-policy-select">
-                                                <option value="">保持TLS原配置</option>
-                                                <option value="true">跳过证书验证</option>
-                                                <option value="false">启用证书验证</option>
-                                            </select>
-                                            <i class="fas fa-chevron-down pointer-events-none absolute right-0 text-[10px] text-orange-500 dark:text-orange-300"></i>
-                                        </span>
-                                    </label>
+                                    <div class="relative tooltip-container" data-tooltip="保持TLS原配置时不传scv，不强制写入证书验证字段">
+                                        <input type="hidden" id="scv" name="scv" value="">
+                                        <button type="button" id="tlsPolicyToggle" class="flex items-center text-xs bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/70 dark:hover:bg-orange-800/80 text-gray-700 dark:text-gray-200 px-2 py-1 rounded cursor-pointer transition-colors">
+                                            <i class="fas fa-shield-alt text-orange-500 dark:text-orange-400 mr-1 text-xs"></i>
+                                            <span class="whitespace-nowrap">TLS验证</span>
+                                            <span id="tlsPolicyText" class="ml-1 font-medium text-gray-700 dark:text-gray-100">保持TLS原配置</span>
+                                            <i class="fas fa-chevron-down ml-1 text-[10px] text-orange-500 dark:text-orange-300"></i>
+                                        </button>
+                                        <div id="tlsPolicyMenu" class="hidden absolute left-0 top-full mt-1 w-36 rounded-lg border border-orange-100 dark:border-orange-800 bg-white dark:bg-gray-800 shadow-xl z-50 overflow-hidden">
+                                            <button type="button" class="tls-policy-option" data-value="">保持TLS原配置</button>
+                                            <button type="button" class="tls-policy-option" data-value="true">跳过证书验证</button>
+                                            <button type="button" class="tls-policy-option" data-value="false">启用证书验证</button>
+                                        </div>
+                                    </div>
                                     <label class="flex items-center text-xs bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/70 dark:hover:bg-indigo-800/80 text-gray-700 dark:text-gray-200 px-1.5 sm:px-2 py-1 rounded cursor-pointer transition-colors relative tooltip-container" data-tooltip="启用UDP">
                                         <input type="checkbox" id="udp" name="udp" class="mr-1 h-3 w-3">
                                         <i class="fas fa-broadcast-tower text-indigo-500 dark:text-indigo-400 mr-1 text-xs"></i><span>UDP</span>
