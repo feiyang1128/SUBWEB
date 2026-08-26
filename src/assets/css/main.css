@@ -208,11 +208,11 @@
 }
 
 .tls-policy-select {
-    @apply appearance-none w-[118px] rounded-md border border-orange-200/80 dark:border-orange-700/80 bg-white/80 dark:bg-orange-950/40 py-0.5 pl-2 pr-6 text-xs font-medium leading-5 text-gray-700 dark:text-gray-100 shadow-sm transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400;
+    @apply appearance-none w-[104px] bg-transparent py-0 pl-0 pr-4 text-xs font-medium leading-5 text-gray-700 dark:text-gray-100 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-0;
 }
 
 .tls-policy-select:hover {
-    @apply border-orange-300 dark:border-orange-600 bg-white dark:bg-orange-950/60;
+    @apply text-orange-700 dark:text-orange-200;
 }
 
 /* Floating label for selects */
