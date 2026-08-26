@@ -205,7 +205,7 @@
 }
 
 .tls-policy-segment {
-    @apply inline-flex items-center rounded bg-white/70 dark:bg-orange-950/30 p-0.5;
+    @apply inline-flex items-center gap-0.5 rounded bg-white/70 dark:bg-orange-950/30 p-0.5;
 }
 
 .tls-policy-segment label {
@@ -217,7 +217,7 @@
 }
 
 .tls-policy-segment span {
-    @apply block rounded px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-200 transition-colors;
+    @apply block min-w-[64px] rounded px-2 py-1 text-center text-xs font-medium text-gray-600 dark:text-gray-200 transition-colors;
 }
 
 .tls-policy-segment input:checked + span {
