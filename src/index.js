@@ -101,7 +101,6 @@ let mobileAdvancedOptions = {
     emoji: true,
     append_type: false,
     append_info: true,
-    udp: false,
     list: false,
     sort: false,
     fdn: false,
@@ -111,7 +110,9 @@ let mobileAdvancedOptions = {
 function updateMobileAdvancedButton() {
     const checkedScv = document.querySelector('input[name="scv"]:checked');
     const tlsPolicy = checkedScv?.value || document.getElementById('mobileScv')?.value;
-    const selectedCount = Object.values(mobileAdvancedOptions).filter(val => val).length + (tlsPolicy ? 1 : 0);
+    const checkedUdp = document.querySelector('input[name="udp"]:checked');
+    const udpPolicy = checkedUdp?.value || document.getElementById('mobileUdp')?.value;
+    const selectedCount = Object.values(mobileAdvancedOptions).filter(val => val).length + (tlsPolicy ? 1 : 0) + (udpPolicy ? 1 : 0);
     const toggleText = document.getElementById('advancedToggleText');
     if (toggleText) {
         toggleText.textContent = selectedCount > 0 ? `高级选项 (${selectedCount})` : '高级选项';
@@ -120,7 +121,7 @@ function updateMobileAdvancedButton() {
 
 function syncMobileAdvancedOptions() {
     // Sync from desktop checkboxes to mobile modal
-    const desktopOptions = ['emoji', 'append_type', 'append_info', 'udp', 'list', 'sort', 'fdn', 'insert'];
+    const desktopOptions = ['emoji', 'append_type', 'append_info', 'list', 'sort', 'fdn', 'insert'];
     desktopOptions.forEach(option => {
         const desktopCheckbox = document.getElementById(option);
         if (desktopCheckbox) {
@@ -132,6 +133,12 @@ function syncMobileAdvancedOptions() {
     const mobileScv = document.getElementById('mobileScv');
     if (desktopScv && mobileScv) {
         mobileScv.value = desktopScv.value;
+    }
+
+    const desktopUdp = document.querySelector('input[name="udp"]:checked');
+    const mobileUdp = document.getElementById('mobileUdp');
+    if (desktopUdp && mobileUdp) {
+        mobileUdp.value = desktopUdp.value;
     }
 
     updateMobileAdvancedModal();
@@ -165,6 +172,11 @@ function applyMobileAdvancedOptions() {
     if (mobileScv) {
         updateTlsPolicyUi(mobileScv.value);
     }
+
+    const mobileUdp = document.getElementById('mobileUdp');
+    if (mobileUdp) {
+        updateUdpPolicyUi(mobileUdp.value);
+    }
 }
 
 function updateTlsPolicyUi(value) {
@@ -176,6 +188,21 @@ function updateTlsPolicyUi(value) {
     }
 
     desktopScvOptions.forEach(option => {
+        option.checked = option.value === value;
+    });
+
+    updateMobileAdvancedButton();
+}
+
+function updateUdpPolicyUi(value) {
+    const mobileUdp = document.getElementById('mobileUdp');
+    const desktopUdpOptions = document.querySelectorAll('input[name="udp"]');
+
+    if (mobileUdp) {
+        mobileUdp.value = value;
+    }
+
+    desktopUdpOptions.forEach(option => {
         option.checked = option.value === value;
     });
 
@@ -373,7 +400,6 @@ function buildAdvancedParams(data) {
         ['emoji', data.emoji || 'false'],
         ['append_type', data.append_type || 'false'],
         ['append_info', data.append_info || 'false'],
-        ['udp', data.udp || 'false'],
         ['list', data.list || 'false'],
         ['sort', data.sort || 'false'],
         ['fdn', data.fdn || 'false'],
@@ -382,6 +408,10 @@ function buildAdvancedParams(data) {
 
     if (data.scv) {
         params.splice(3, 0, ['scv', data.scv]);
+    }
+
+    if (data.udp) {
+        params.splice(data.scv ? 4 : 3, 0, ['udp', data.udp]);
     }
 
     return params.map(([key, value]) => `&${key}=${value}`).join('');
@@ -580,7 +610,7 @@ function handleFormSubmit(event) {
         append_type: formData.get('append_type') === 'on' ? 'true' : 'false',
         append_info: formData.get('append_info') === 'on' ? 'true' : 'false',
         scv: ['true', 'false'].includes(formData.get('scv')) ? formData.get('scv') : '',
-        udp: formData.get('udp') === 'on' ? 'true' : 'false',
+        udp: ['true', 'false'].includes(formData.get('udp')) ? formData.get('udp') : '',
         list: formData.get('list') === 'on' ? 'true' : 'false',
         sort: formData.get('sort') === 'on' ? 'true' : 'false',
         fdn: formData.get('fdn') === 'on' ? 'true' : 'false',
@@ -731,7 +761,7 @@ function handleClashQrCode() {
         append_type: formData.get('append_type') === 'on' ? 'true' : 'false',
         append_info: formData.get('append_info') === 'on' ? 'true' : 'false',
         scv: ['true', 'false'].includes(formData.get('scv')) ? formData.get('scv') : '',
-        udp: formData.get('udp') === 'on' ? 'true' : 'false',
+        udp: ['true', 'false'].includes(formData.get('udp')) ? formData.get('udp') : '',
         list: formData.get('list') === 'on' ? 'true' : 'false',
         sort: formData.get('sort') === 'on' ? 'true' : 'false',
         fdn: formData.get('fdn') === 'on' ? 'true' : 'false',
@@ -1276,6 +1306,25 @@ $(document).ready(() => {
         option.addEventListener('change', () => {
             if (option.checked) {
                 updateTlsPolicyUi(option.value);
+            }
+        });
+    });
+
+    const mobileUdp = document.getElementById('mobileUdp');
+    const desktopUdpOptions = document.querySelectorAll('input[name="udp"]');
+    if (mobileUdp && desktopUdpOptions.length) {
+        mobileUdp.addEventListener('change', () => {
+            updateUdpPolicyUi(mobileUdp.value);
+        });
+    }
+
+    const checkedUdp = document.querySelector('input[name="udp"]:checked');
+    updateUdpPolicyUi(checkedUdp ? checkedUdp.value : '');
+
+    desktopUdpOptions.forEach(option => {
+        option.addEventListener('change', () => {
+            if (option.checked) {
+                updateUdpPolicyUi(option.value);
             }
         });
     });

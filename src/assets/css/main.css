@@ -204,24 +204,36 @@
     @apply font-medium;
 }
 
-.tls-policy-segment {
+.tls-policy-segment,
+.udp-policy-segment {
     @apply inline-flex items-center gap-0.5 rounded bg-white/70 dark:bg-orange-950/30 p-0.5;
 }
 
-.tls-policy-segment label {
+.udp-policy-segment {
+    @apply dark:bg-indigo-950/30;
+}
+
+.tls-policy-segment label,
+.udp-policy-segment label {
     @apply cursor-pointer;
 }
 
-.tls-policy-segment input {
+.tls-policy-segment input,
+.udp-policy-segment input {
     @apply sr-only;
 }
 
-.tls-policy-segment span {
+.tls-policy-segment span,
+.udp-policy-segment span {
     @apply block min-w-[64px] rounded px-2 py-1 text-center text-xs font-medium text-gray-600 dark:text-gray-200 transition-colors;
 }
 
 .tls-policy-segment input:checked + span {
     @apply bg-orange-500 text-white shadow-sm;
+}
+
+.udp-policy-segment input:checked + span {
+    @apply bg-indigo-500 text-white shadow-sm;
 }
 
 /* Floating label for selects */
