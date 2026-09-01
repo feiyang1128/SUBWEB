@@ -88,6 +88,7 @@ module.exports = {
         },
         minimize: true,
         minimizer: [new TerserPlugin({
+            exclude: /qrcode\.min\.js$/,
             terserOptions: {
                 toplevel: true
                 
