@@ -100,6 +100,31 @@ export const backendConfig = [
 ];
 export const externalConfig = [
   {
+    label: "Feiyang规则",
+    options: [
+      {
+        label: "智能优选-自动选择、负载均衡、AI、IPV6、cloudflare、Adblock",
+        value:
+          "https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-all.yml",
+      },
+      {
+        label: "智能优选-自动选择、负载均衡、AI、cloudflare、Adblock",
+        value:
+          "https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-no6.yml",
+      },
+      {
+        label: "智能优选-自动选择、负载均衡、AI、IPV6、Adblock",
+        value:
+          "https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-nocf.yml",
+      },
+      {
+        label: "智能优选-自动选择、负载均衡、AI、Adblock",
+        value:
+          "https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-no6nocf.yml",
+      },
+    ],
+  },
+  {
     label: "CM规则",
     options: [
       {
@@ -266,31 +291,6 @@ export const externalConfig = [
       {
         label: "本地GFW版",
         value: "config/ACL4SSR_WithGFW.ini",
-      },
-    ],
-  },
-  {
-    label: "Feiyang规则",
-    options: [
-      {
-        label: "智能优选-自动选择、负载均衡、AI、IPV6、cloudflare、Adblock",
-        value:
-          "https://gh-proxy.org/https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-all.yml",
-      },
-      {
-        label: "智能优选-自动选择、负载均衡、AI、cloudflare、Adblock",
-        value:
-          "https://gh-proxy.org/https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-no6.yml",
-      },
-      {
-        label: "智能优选-自动选择、负载均衡、AI、IPV6、Adblock",
-        value:
-          "https://gh-proxy.org/https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-nocf.yml",
-      },
-      {
-        label: "智能优选-自动选择、负载均衡、AI、Adblock",
-        value:
-          "https://gh-proxy.org/https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-no6nocf.yml",
       },
     ],
   },
