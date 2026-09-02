@@ -158,13 +158,13 @@
             <div class="group animate-slide-up">
                 <div class="card-glass">
                     <div class="card-body">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
-                            <div class="flex items-center justify-between">
+                        <div class="mb-6 space-y-4">
+                            <div class="flex items-center justify-between gap-3">
                                 <div class="flex items-center">
                                     <div class="bg-green-100 dark:bg-green-900 w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl mr-4 floating flex-shrink-0 flex items-center justify-center">
                                         <i class="fas fa-cog text-green-600 dark:text-green-400 text-sm sm:text-lg"></i>
                                     </div>
-                                    <h3 class="text-lg sm:text-xl font-bold gradient-text">配置与过滤</h3>
+                                    <h3 class="text-lg sm:text-xl font-bold gradient-text whitespace-nowrap">配置与过滤</h3>
                                 </div>
                                 
                                 <!-- Mobile Advanced Options Toggle Button - same line as title -->
@@ -178,9 +178,9 @@
                                 </div>
                             </div>
                             <!-- Advanced Options - Desktop version (unchanged) -->
-                            <div class="hidden sm:flex sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-                                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 sm:mr-2">高级选项:</span>
-                                <div class="grid grid-cols-3 sm:flex sm:flex-wrap gap-1 sm:gap-2">
+                            <div class="hidden sm:flex sm:flex-col xl:flex-row xl:items-start gap-2">
+                                <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap pt-1">高级选项:</span>
+                                <div class="flex flex-wrap gap-1 sm:gap-2">
                                     <label class="flex items-center text-xs bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/70 dark:hover:bg-blue-800/80 text-gray-700 dark:text-gray-200 px-1.5 sm:px-2 py-1 rounded cursor-pointer transition-colors relative tooltip-container" data-tooltip="启用Emoji">
                                         <input type="checkbox" id="emoji" name="emoji" checked class="mr-1 h-3 w-3">
                                         <i class="fas fa-smile text-yellow-500 dark:text-yellow-400 mr-1 text-xs"></i><span class="hidden sm:inline">Emoji</span><span class="sm:hidden text-xs">😊</span>
@@ -278,12 +278,39 @@
                                 <input type="text" id="customConfig" name="customConfig" placeholder="输入自定义配置链接 (https://...)"
                                     class="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-green-200 dark:border-green-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium transition-all duration-200 hover:border-green-300 dark:hover:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:bg-gray-50 dark:focus:bg-gray-700 text-sm sm:text-base">
                             </div>
+                            <div class="mt-5">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center space-x-3 w-full">
+                                        <label for="shortService" class="form-label flex items-center mb-0">
+                                            <i class="fas fa-link text-blue-500 dark:text-blue-400 mr-2"></i>
+                                            短链服务
+                                        </label>
+                                        <div class="flex items-center">
+                                            <span class="text-xs text-gray-600 dark:text-gray-400 mr-2">自定义链接</span>
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" id="customShortServiceToggle" class="sr-only peer">
+                                                <div class="relative w-10 h-5 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="shortServiceSelectContainer" class="select-enhanced">
+                                    <select id="shortService"
+                                        class="w-full px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium transition-all duration-200 appearance-none cursor-pointer hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-gray-50 dark:focus:bg-gray-700 text-sm sm:text-base">
+                                    </select>
+                                </div>
+                                <div id="customShortServiceContainer" class="hidden mt-3 animate-fade-in">
+                                    <input type="text" id="customShortService" inputmode="url"
+                                        placeholder="短链API地址"
+                                        class="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-blue-200 dark:border-blue-700 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-gray-50 dark:focus:bg-gray-700 text-sm sm:text-base">
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Filter Options -->
                         <div class="pt-4">
                             <h4 class="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-200 mb-3">节点过滤</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                                 <div class="space-y-1">
                                     <label for="include" class="form-label flex items-center text-sm">
                                         <i class="fas fa-plus-circle text-green-500 dark:text-green-400 mr-2"></i>
@@ -302,13 +329,22 @@
                                         placeholder="节点名不包含的关键字，支持正则"
                                         class="input-field hover:bg-gray-100 focus:bg-white text-sm">
                                 </div>
-                                <div class="space-y-1 sm:col-span-2 lg:col-span-1">
+                                <div class="space-y-1">
                                     <label for="name" class="form-label flex items-center text-sm">
                                         <i class="fas fa-file-signature text-blue-500 mr-2"></i>
                                         转换文件名
                                     </label>
                                     <input type="text" id="name" name="name"
                                         placeholder="链接返回的订阅文件名"
+                                        class="input-field hover:bg-gray-100 focus:bg-white text-sm">
+                                </div>
+                                <div class="space-y-1">
+                                    <label for="interval" class="form-label flex items-center text-sm">
+                                        <i class="fas fa-clock text-amber-500 mr-2"></i>
+                                        更新间隔
+                                    </label>
+                                    <input type="text" id="interval" name="interval" inputmode="numeric"
+                                        placeholder="分钟，最小15"
                                         class="input-field hover:bg-gray-100 focus:bg-white text-sm">
                                 </div>
                             </div>
@@ -359,6 +395,11 @@
                                 class="btn-secondary text-sm sm:text-base px-4 py-2">
                                 <i class="fas fa-qrcode mr-2"></i>
                                 生成二维码
+                            </button>
+                            <button id="shortUrlBtn" type="button"
+                                class="btn-secondary text-sm sm:text-base px-4 py-2">
+                                <i class="fas fa-link mr-2"></i>
+                                生成短链
                             </button>
                             <button id="copyBtn" type="button"
                                 class="btn-primary text-sm sm:text-base px-4 py-2">

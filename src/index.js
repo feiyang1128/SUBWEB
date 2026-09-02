@@ -1,5 +1,5 @@
 import './assets/css/main.css';
-import { backendConfig, externalConfig, targetConfig } from './config.js';
+import { backendConfig, externalConfig, shortUrlConfig, targetConfig } from './config.js';
 
 let subUrl = '';
 
@@ -159,26 +159,6 @@ function updateMobileAdvancedModal() {
     });
 }
 
-function applyMobileAdvancedOptions() {
-    // Apply mobile options to desktop checkboxes
-    Object.keys(mobileAdvancedOptions).forEach(option => {
-        const desktopCheckbox = document.getElementById(option);
-        if (desktopCheckbox) {
-            desktopCheckbox.checked = mobileAdvancedOptions[option];
-        }
-    });
-
-    const mobileScv = document.getElementById('mobileScv');
-    if (mobileScv) {
-        updateTlsPolicyUi(mobileScv.value);
-    }
-
-    const mobileUdp = document.getElementById('mobileUdp');
-    if (mobileUdp) {
-        updateUdpPolicyUi(mobileUdp.value);
-    }
-}
-
 function updateTlsPolicyUi(value) {
     const mobileScv = document.getElementById('mobileScv');
     const desktopScvOptions = document.querySelectorAll('input[name="scv"]');
@@ -210,7 +190,6 @@ function updateUdpPolicyUi(value) {
 }
 
 function handleMobileAdvancedToggle(optionName) {
-    console.log('Toggling option:', optionName, 'from', mobileAdvancedOptions[optionName], 'to', !mobileAdvancedOptions[optionName]);
     mobileAdvancedOptions[optionName] = !mobileAdvancedOptions[optionName];
     updateMobileAdvancedModal();
     updateMobileAdvancedButton();
@@ -223,7 +202,7 @@ function handleMobileAdvancedToggle(optionName) {
 }
 
 // Initialize theme manager
-const themeManager = new ThemeManager();
+new ThemeManager();
 
 // Optimize DOM queries with caching
 const domCache = new Map();
@@ -237,11 +216,6 @@ function getCachedElement(id) {
         return element;
     }
     return domCache.get(id);
-}
-
-// Clear cache when needed
-function clearDOMCache() {
-    domCache.clear();
 }
 
 const TOAST_VISIBLE_DURATION = 3500;
@@ -417,6 +391,45 @@ function buildAdvancedParams(data) {
     return params.map(([key, value]) => `&${key}=${value}`).join('');
 }
 
+function buildIntervalParam(interval) {
+    if (!interval) {
+        return '';
+    }
+
+    const minutes = Number(interval);
+    if (!Number.isFinite(minutes) || minutes < 15) {
+        return '';
+    }
+
+    return `&interval=${encodeURIComponent(Math.ceil(minutes * 60))}`;
+}
+
+function sanitizeNumberInput(value) {
+    return value.replace(/\D/g, '');
+}
+
+function updateCustomShortServiceUi() {
+    const customShortServiceToggle = document.getElementById('customShortServiceToggle');
+    const shortServiceSelectContainer = document.getElementById('shortServiceSelectContainer');
+    const customShortServiceContainer = document.getElementById('customShortServiceContainer');
+    const customShortServiceInput = document.getElementById('customShortService');
+
+    if (!customShortServiceToggle || !shortServiceSelectContainer || !customShortServiceContainer || !customShortServiceInput) {
+        return;
+    }
+
+    if (customShortServiceToggle.checked) {
+        shortServiceSelectContainer.classList.add('hidden');
+        customShortServiceContainer.classList.remove('hidden');
+        customShortServiceInput.required = true;
+        customShortServiceInput.focus();
+    } else {
+        shortServiceSelectContainer.classList.remove('hidden');
+        customShortServiceContainer.classList.add('hidden');
+        customShortServiceInput.required = false;
+    }
+}
+
 function generateSubUrl(data) {
     const backend = data.backend;
     let originUrl = data.url;
@@ -440,6 +453,7 @@ function generateSubUrl(data) {
         newSubUrl += `&filename=${encodeURIComponent(data.name)}`;
     }
 
+    newSubUrl += buildIntervalParam(data.interval);
     newSubUrl += buildAdvancedParams(data);
     subUrl = newSubUrl;
     $('#result').val(subUrl);
@@ -501,12 +515,19 @@ function initializeForm() {
     }
 
     // Backend select is now handled by initializeBackends function
-    
-    // Add backend change listener for header selector
-    const backendHeaderSelect = document.getElementById('backendHeader');
-    if (backendHeaderSelect) {
-        backendHeaderSelect.addEventListener('change', handleBackendChange);
+
+    const shortServiceSelect = getCachedElement('shortService');
+    if (shortServiceSelect && shortServiceSelect.options.length === 0) {
+        shortUrlConfig.forEach((option, index) => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.label;
+            opt.selected = index === 0;
+            shortServiceSelect.appendChild(opt);
+        });
+
     }
+    
 }
 
 // Handle backend selection change
@@ -606,6 +627,7 @@ function handleFormSubmit(event) {
         include: formData.get('include'),
         exclude: formData.get('exclude'),
         name: formData.get('name'),
+        interval: formData.get('interval'),
         emoji: formData.get('emoji') === 'on' ? 'true' : 'false',
         append_type: formData.get('append_type') === 'on' ? 'true' : 'false',
         append_info: formData.get('append_info') === 'on' ? 'true' : 'false',
@@ -685,6 +707,68 @@ function handleQrCode() {
     }
 }
 
+async function handleShortUrl() {
+    const result = document.getElementById('result');
+    const shortUrlBtn = document.getElementById('shortUrlBtn');
+    const shortServiceSelect = document.getElementById('shortService');
+    const customShortServiceToggle = document.getElementById('customShortServiceToggle');
+    const customShortServiceInput = document.getElementById('customShortService');
+    const longUrl = result ? result.value.trim() : '';
+    let shortService = shortServiceSelect ? shortServiceSelect.value : '';
+
+    if (!longUrl) {
+        showToast('未生成订阅链接', 'error');
+        return;
+    }
+
+    if (customShortServiceToggle && customShortServiceToggle.checked) {
+        shortService = customShortServiceInput ? customShortServiceInput.value.trim() : '';
+    }
+
+    if (!shortService) {
+        showToast('请选择或填写短链服务', 'error');
+        return;
+    }
+
+    try {
+        new URL(shortService);
+    } catch (error) {
+        showToast('短链服务地址格式不正确', 'error');
+        return;
+    }
+
+    try {
+        if (shortUrlBtn) {
+            shortUrlBtn.disabled = true;
+            shortUrlBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>生成中';
+        }
+
+        const body = new FormData();
+        body.append('longUrl', btoa(longUrl));
+
+        const response = await fetch(shortService, {
+            method: 'POST',
+            body
+        });
+        const data = await response.json();
+
+        if (!response.ok || data.Code !== 1 || !data.ShortUrl) {
+            throw new Error(data.Message || data.message || '短链生成失败');
+        }
+
+        subUrl = data.ShortUrl;
+        result.value = data.ShortUrl;
+        copyText(data.ShortUrl);
+    } catch (error) {
+        showToast(error.message || '短链生成失败', 'error');
+    } finally {
+        if (shortUrlBtn) {
+            shortUrlBtn.disabled = false;
+            shortUrlBtn.innerHTML = '<i class="fas fa-link mr-2"></i>生成短链';
+        }
+    }
+}
+
 // Clash QR Code button handler
 function handleClashQrCode() {
     // Get form data first
@@ -757,6 +841,7 @@ function handleClashQrCode() {
         include: formData.get('include'),
         exclude: formData.get('exclude'),
         name: formData.get('name'),
+        interval: formData.get('interval'),
         emoji: formData.get('emoji') === 'on' ? 'true' : 'false',
         append_type: formData.get('append_type') === 'on' ? 'true' : 'false',
         append_info: formData.get('append_info') === 'on' ? 'true' : 'false',
@@ -791,6 +876,7 @@ function handleClashQrCode() {
         newSubUrl += `&filename=${encodeURIComponent(data.name)}`;
     }
 
+    newSubUrl += buildIntervalParam(data.interval);
     newSubUrl += buildAdvancedParams(data);
     
     subUrl = newSubUrl;
@@ -973,7 +1059,6 @@ async function initializeBackends() {
         
         if (!hasSelectedInitial) {
             hasSelectedInitial = true;
-            const avgTime = Math.round(availableBackends.reduce((sum, b) => sum + b.responseTime, 0) / availableBackends.length);
             if (lfreeBackend && shouldSelectLfree) {
                 showToast(`✨ 已自动选择Lfree负载均衡后端，响应时间 ${lfreeBackend.responseTime}ms`, 'success');
             } else {
@@ -991,7 +1076,7 @@ async function initializeBackends() {
     
     // Process in chunks for better mobile performance
     for (const chunk of backendChunks) {
-        const chunkPromises = chunk.map(async (backend, index) => {
+        const chunkPromises = chunk.map(async backend => {
             // Stagger the requests to avoid overwhelming the network
             const globalIndex = backendChunks.flat().indexOf(backend);
             await new Promise(resolve => setTimeout(resolve, globalIndex * 100));
@@ -1168,7 +1253,7 @@ $(document).ready(() => {
     // Add change listener for header backend selector
     if (backendHeaderSelect) {
         backendHeaderSelect.addEventListener('change', () => {
-            syncBackendSelectors('backendHeader');
+            handleBackendChange();
             // Close dropdown after selection
             if (backendDropdown) {
                 backendDropdown.classList.add('hidden');
@@ -1199,13 +1284,34 @@ $(document).ready(() => {
     if (qrBtn) {
         qrBtn.addEventListener('click', handleQrCode);
     }
+
+    const shortUrlBtn = document.getElementById('shortUrlBtn');
+    if (shortUrlBtn) {
+        shortUrlBtn.addEventListener('click', handleShortUrl);
+    }
+
+    const customShortServiceToggle = document.getElementById('customShortServiceToggle');
+    if (customShortServiceToggle) {
+        customShortServiceToggle.addEventListener('change', updateCustomShortServiceUi);
+        updateCustomShortServiceUi();
+    }
     
     // Clash QR Code button
     const clashQrBtn = document.getElementById('clashQrBtn');
     if (clashQrBtn) {
         clashQrBtn.addEventListener('click', handleClashQrCode);
     }
-    
+
+    const intervalInput = document.getElementById('interval');
+    if (intervalInput) {
+        intervalInput.addEventListener('input', () => {
+            const value = sanitizeNumberInput(intervalInput.value);
+            if (intervalInput.value !== value) {
+                intervalInput.value = value;
+            }
+        });
+    }
+
     // QR Modal close buttons
     const closeQrModal = document.getElementById('closeQrModal');
     const qrModal = document.getElementById('qrModal');
@@ -1274,7 +1380,6 @@ $(document).ready(() => {
             e.stopPropagation();
             const optionName = card.getAttribute('data-option');
             if (optionName) {
-                console.log('Clicking option:', optionName); // Debug log
                 handleMobileAdvancedToggle(optionName);
             }
         });
@@ -1285,7 +1390,6 @@ $(document).ready(() => {
             e.stopPropagation();
             const optionName = card.getAttribute('data-option');
             if (optionName) {
-                console.log('Touch option:', optionName); // Debug log
                 handleMobileAdvancedToggle(optionName);
             }
         });

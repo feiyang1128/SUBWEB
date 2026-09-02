@@ -98,6 +98,14 @@ export const backendConfig = [
     value: "http://localhost:25500/sub?",
   },
 ];
+
+export const shortUrlConfig = [
+  {
+    label: "d1.mk",
+    value: "https://d1.mk/short",
+  },
+];
+
 export const externalConfig = [
   {
     label: "Feiyang规则",
