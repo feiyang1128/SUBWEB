@@ -77,7 +77,15 @@
     }
     
     .card-glass {
-        @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-white/30 dark:hover:border-gray-600/60;
+        @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/50 overflow-visible transition-all duration-300 hover:shadow-2xl hover:border-white/30 dark:hover:border-gray-600/60;
+    }
+
+    .card-glass.has-open-select {
+        @apply relative z-[60];
+    }
+
+    .group.has-open-select-group {
+        @apply relative z-[60];
     }
     
     .card-header {
@@ -163,6 +171,87 @@
     @apply relative;
 }
 
+.select-enhanced select.select-native-hidden {
+    @apply absolute inset-0 z-0 h-full w-full opacity-0;
+}
+
+.custom-select {
+    @apply relative z-10;
+}
+
+.custom-select.is-open {
+    @apply z-[70];
+}
+
+.custom-select-button {
+    @apply flex w-full items-center justify-between gap-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-100 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-500 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+}
+
+.custom-select-button.is-disabled {
+    @apply cursor-not-allowed opacity-70;
+}
+
+.custom-select-label {
+    @apply min-w-0 flex-1 truncate;
+}
+
+.custom-select-chevron {
+    @apply flex-shrink-0 text-gray-400 transition-transform duration-200;
+}
+
+.custom-select.is-open .custom-select-chevron {
+    @apply rotate-180 text-primary-500;
+}
+
+.custom-select-menu {
+    @apply absolute left-0 right-0 top-full z-[70] mt-2 min-w-full overflow-y-auto rounded-xl border border-gray-200 dark:border-gray-600 bg-white/95 dark:bg-gray-800/95 p-1.5 shadow-2xl backdrop-blur-xl;
+    max-height: min(18rem, var(--custom-select-space, 18rem));
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+}
+
+.custom-select-menu::-webkit-scrollbar {
+    width: 5px;
+}
+
+.custom-select-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-select-menu::-webkit-scrollbar-thumb {
+    background-color: rgba(148, 163, 184, 0.55);
+    border-radius: 999px;
+}
+
+.custom-select-menu::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(100, 116, 139, 0.75);
+}
+
+.custom-select-menu.is-hidden {
+    @apply hidden;
+}
+
+.custom-select-group {
+    @apply px-3 pb-1 pt-2 text-xs font-semibold uppercase text-gray-400 dark:text-gray-500;
+}
+
+.custom-select-option {
+    @apply flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-100 transition-colors hover:bg-primary-50 hover:text-primary-700 dark:hover:bg-gray-700 dark:hover:text-white;
+}
+
+.custom-select-option.is-selected {
+    @apply bg-primary-50 font-semibold text-primary-700 dark:bg-primary-900/40 dark:text-primary-200;
+}
+
+.custom-select-option.is-disabled {
+    @apply cursor-not-allowed opacity-50 hover:bg-transparent hover:text-gray-700 dark:hover:text-gray-100;
+}
+
+.custom-select-check {
+    @apply flex-shrink-0 text-primary-600 dark:text-primary-300;
+}
+
 .select-enhanced select {
     @apply w-full appearance-none cursor-pointer border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 font-medium shadow-sm transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
@@ -202,38 +291,6 @@
 
 .select-enhanced select option:checked {
     @apply font-medium;
-}
-
-.tls-policy-segment,
-.udp-policy-segment {
-    @apply inline-flex items-center gap-0.5 rounded bg-white/70 dark:bg-orange-950/30 p-0.5;
-}
-
-.udp-policy-segment {
-    @apply dark:bg-indigo-950/30;
-}
-
-.tls-policy-segment label,
-.udp-policy-segment label {
-    @apply cursor-pointer;
-}
-
-.tls-policy-segment input,
-.udp-policy-segment input {
-    @apply sr-only;
-}
-
-.tls-policy-segment span,
-.udp-policy-segment span {
-    @apply block min-w-[64px] rounded px-2 py-1 text-center text-xs font-medium text-gray-600 dark:text-gray-200 transition-colors;
-}
-
-.tls-policy-segment input:checked + span {
-    @apply bg-orange-500 text-white shadow-sm;
-}
-
-.udp-policy-segment input:checked + span {
-    @apply bg-indigo-500 text-white shadow-sm;
 }
 
 /* Floating label for selects */
@@ -427,7 +484,7 @@
     
     /* Use CSS containment for better performance */
     .card, .card-glass {
-        contain: layout style paint;
+        contain: layout style;
     }
     
     /* Optimize font rendering */

@@ -108,10 +108,8 @@ let mobileAdvancedOptions = {
 };
 
 function updateMobileAdvancedButton() {
-    const checkedScv = document.querySelector('input[name="scv"]:checked');
-    const tlsPolicy = checkedScv?.value || document.getElementById('mobileScv')?.value;
-    const checkedUdp = document.querySelector('input[name="udp"]:checked');
-    const udpPolicy = checkedUdp?.value || document.getElementById('mobileUdp')?.value;
+    const tlsPolicy = document.getElementById('desktopScv')?.value || document.getElementById('mobileScv')?.value;
+    const udpPolicy = document.getElementById('desktopUdp')?.value || document.getElementById('mobileUdp')?.value;
     const selectedCount = Object.values(mobileAdvancedOptions).filter(val => val).length + (tlsPolicy ? 1 : 0) + (udpPolicy ? 1 : 0);
     const toggleText = document.getElementById('advancedToggleText');
     if (toggleText) {
@@ -129,13 +127,13 @@ function syncMobileAdvancedOptions() {
         }
     });
 
-    const desktopScv = document.querySelector('input[name="scv"]:checked');
+    const desktopScv = document.getElementById('desktopScv');
     const mobileScv = document.getElementById('mobileScv');
     if (desktopScv && mobileScv) {
         mobileScv.value = desktopScv.value;
     }
 
-    const desktopUdp = document.querySelector('input[name="udp"]:checked');
+    const desktopUdp = document.getElementById('desktopUdp');
     const mobileUdp = document.getElementById('mobileUdp');
     if (desktopUdp && mobileUdp) {
         mobileUdp.value = desktopUdp.value;
@@ -161,30 +159,34 @@ function updateMobileAdvancedModal() {
 
 function updateTlsPolicyUi(value) {
     const mobileScv = document.getElementById('mobileScv');
-    const desktopScvOptions = document.querySelectorAll('input[name="scv"]');
+    const desktopScv = document.getElementById('desktopScv');
 
     if (mobileScv) {
         mobileScv.value = value;
+        syncCustomSelect(mobileScv);
     }
 
-    desktopScvOptions.forEach(option => {
-        option.checked = option.value === value;
-    });
+    if (desktopScv) {
+        desktopScv.value = value;
+        syncCustomSelect(desktopScv);
+    }
 
     updateMobileAdvancedButton();
 }
 
 function updateUdpPolicyUi(value) {
     const mobileUdp = document.getElementById('mobileUdp');
-    const desktopUdpOptions = document.querySelectorAll('input[name="udp"]');
+    const desktopUdp = document.getElementById('desktopUdp');
 
     if (mobileUdp) {
         mobileUdp.value = value;
+        syncCustomSelect(mobileUdp);
     }
 
-    desktopUdpOptions.forEach(option => {
-        option.checked = option.value === value;
-    });
+    if (desktopUdp) {
+        desktopUdp.value = value;
+        syncCustomSelect(desktopUdp);
+    }
 
     updateMobileAdvancedButton();
 }
@@ -206,6 +208,7 @@ new ThemeManager();
 
 // Optimize DOM queries with caching
 const domCache = new Map();
+const customSelects = new WeakMap();
 
 function getCachedElement(id) {
     if (!domCache.has(id)) {
@@ -216,6 +219,218 @@ function getCachedElement(id) {
         return element;
     }
     return domCache.get(id);
+}
+
+function getSelectByRef(selectOrId) {
+    if (typeof selectOrId === 'string') {
+        return document.getElementById(selectOrId);
+    }
+    return selectOrId;
+}
+
+function getSelectedOption(select) {
+    return select.selectedOptions[0] || select.options[select.selectedIndex] || select.options[0];
+}
+
+function closeCustomSelect(select) {
+    const state = customSelects.get(select);
+    if (!state) return;
+
+    state.root.classList.remove('is-open');
+    state.card?.classList.remove('has-open-select');
+    state.group?.classList.remove('has-open-select-group');
+    state.button.setAttribute('aria-expanded', 'false');
+    state.menu.classList.add('is-hidden');
+}
+
+function closeOtherCustomSelects(activeSelect) {
+    document.querySelectorAll('.select-enhanced select').forEach(select => {
+        if (select !== activeSelect) {
+            closeCustomSelect(select);
+        }
+    });
+}
+
+function updateCustomSelectSpace(select) {
+    const state = customSelects.get(select);
+    if (!state) return;
+
+    const rect = state.button.getBoundingClientRect();
+    const bottomBarOffset = window.innerWidth < 640 ? 92 : 16;
+    const availableSpace = Math.max(180, window.innerHeight - rect.bottom - bottomBarOffset);
+    state.menu.style.setProperty('--custom-select-space', `${availableSpace}px`);
+}
+
+function setCustomSelectValue(select, value) {
+    select.value = value;
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    syncCustomSelect(select);
+}
+
+function createCustomSelectOption(select, option) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'custom-select-option';
+    button.dataset.value = option.value;
+    button.setAttribute('role', 'option');
+    button.setAttribute('aria-selected', option.selected ? 'true' : 'false');
+    const label = document.createElement('span');
+    label.className = 'min-w-0 truncate';
+    label.textContent = option.textContent;
+    button.appendChild(label);
+
+    if (option.selected) {
+        button.classList.add('is-selected');
+        const check = document.createElement('i');
+        check.className = 'fas fa-check custom-select-check';
+        button.appendChild(check);
+    }
+
+    if (option.disabled) {
+        button.disabled = true;
+        button.classList.add('is-disabled');
+    }
+
+    button.addEventListener('click', () => {
+        if (!option.disabled) {
+            setCustomSelectValue(select, option.value);
+            closeCustomSelect(select);
+        }
+    });
+
+    return button;
+}
+
+function renderCustomSelectOptions(select, menu) {
+    menu.innerHTML = '';
+
+    Array.from(select.children).forEach(child => {
+        if (child.tagName === 'OPTGROUP') {
+            const groupLabel = document.createElement('div');
+            groupLabel.className = 'custom-select-group';
+            groupLabel.textContent = child.label;
+            menu.appendChild(groupLabel);
+
+            Array.from(child.children).forEach(option => {
+                menu.appendChild(createCustomSelectOption(select, option));
+            });
+            return;
+        }
+
+        if (child.tagName === 'OPTION') {
+            menu.appendChild(createCustomSelectOption(select, child));
+        }
+    });
+}
+
+function syncCustomSelect(selectOrId) {
+    const select = getSelectByRef(selectOrId);
+    if (!select || !select.closest('.select-enhanced')) return;
+
+    let state = customSelects.get(select);
+    if (!state) {
+        const root = document.createElement('div');
+        root.className = 'custom-select';
+        const card = select.closest('.card-glass');
+        const group = select.closest('.group');
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'custom-select-button rounded-xl';
+        button.setAttribute('aria-haspopup', 'listbox');
+        button.setAttribute('aria-expanded', 'false');
+
+        const label = document.createElement('span');
+        label.className = 'custom-select-label';
+
+        const chevron = document.createElement('i');
+        chevron.className = 'fas fa-chevron-down custom-select-chevron';
+
+        const menu = document.createElement('div');
+        menu.className = 'custom-select-menu is-hidden';
+        menu.setAttribute('role', 'listbox');
+
+        button.append(label, chevron);
+        root.append(button, menu);
+        select.after(root);
+        select.classList.add('select-native-hidden');
+
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (select.disabled) return;
+
+            const isOpen = root.classList.contains('is-open');
+            closeOtherCustomSelects(select);
+            updateCustomSelectSpace(select);
+            root.classList.toggle('is-open', !isOpen);
+            card?.classList.toggle('has-open-select', !isOpen);
+            group?.classList.toggle('has-open-select-group', !isOpen);
+            button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+            menu.classList.toggle('is-hidden', isOpen);
+        });
+
+        button.addEventListener('keydown', (event) => {
+            if (!['ArrowDown', 'ArrowUp', 'Enter', ' ', 'Escape'].includes(event.key)) {
+                return;
+            }
+
+            event.preventDefault();
+            const enabledOptions = Array.from(select.options).filter(option => !option.disabled);
+            if (!enabledOptions.length) return;
+
+            const currentIndex = enabledOptions.findIndex(option => option.value === select.value);
+            if (event.key === 'Escape') {
+                closeCustomSelect(select);
+                return;
+            }
+
+            if (event.key === 'Enter' || event.key === ' ') {
+                updateCustomSelectSpace(select);
+                root.classList.add('is-open');
+                card?.classList.add('has-open-select');
+                group?.classList.add('has-open-select-group');
+                button.setAttribute('aria-expanded', 'true');
+                menu.classList.remove('is-hidden');
+                return;
+            }
+
+            const step = event.key === 'ArrowDown' ? 1 : -1;
+            const nextIndex = currentIndex === -1
+                ? 0
+                : (currentIndex + step + enabledOptions.length) % enabledOptions.length;
+            setCustomSelectValue(select, enabledOptions[nextIndex].value);
+        });
+
+        select.addEventListener('change', () => {
+            syncCustomSelect(select);
+        });
+
+        state = { root, button, label, menu, card, group };
+        customSelects.set(select, state);
+    }
+
+    const selectedOption = getSelectedOption(select);
+    state.label.textContent = selectedOption ? selectedOption.textContent : '';
+    state.button.disabled = select.disabled;
+    state.button.classList.toggle('is-disabled', select.disabled);
+    state.card?.classList.toggle('has-open-select', state.root.classList.contains('is-open'));
+    state.group?.classList.toggle('has-open-select-group', state.root.classList.contains('is-open'));
+    renderCustomSelectOptions(select, state.menu);
+}
+
+function initializeCustomSelects(scope = document) {
+    scope.querySelectorAll('.select-enhanced select').forEach(syncCustomSelect);
+}
+
+function refreshOpenCustomSelects() {
+    document.querySelectorAll('.select-enhanced select').forEach(select => {
+        const state = customSelects.get(select);
+        if (state && state.root.classList.contains('is-open')) {
+            updateCustomSelectSpace(select);
+        }
+    });
 }
 
 const TOAST_VISIBLE_DURATION = 3500;
@@ -488,6 +703,7 @@ function initializeForm() {
             opt.textContent = option.label;
             targetSelect.appendChild(opt);
         });
+        syncCustomSelect(targetSelect);
     }
 
     // Populate config select
@@ -512,6 +728,7 @@ function initializeForm() {
             
             configSelect.appendChild(optgroup);
         });
+        syncCustomSelect(configSelect);
     }
 
     // Backend select is now handled by initializeBackends function
@@ -525,7 +742,7 @@ function initializeForm() {
             opt.selected = index === 0;
             shortServiceSelect.appendChild(opt);
         });
-
+        syncCustomSelect(shortServiceSelect);
     }
     
 }
@@ -977,6 +1194,7 @@ async function initializeBackends() {
     // Show loading state with icon
     backendHeaderSelect.innerHTML = '<option value="">🔄 正在检测可用后端...</option>';
     backendHeaderSelect.disabled = true;
+    syncCustomSelect(backendHeaderSelect);
     
     // Show detection progress
     showToast('开始检测后端服务...', 'info');
@@ -1056,6 +1274,7 @@ async function initializeBackends() {
         
         backendHeaderSelect.disabled = false;
         updateBackendButtonLabel();
+        syncCustomSelect(backendHeaderSelect);
         
         if (!hasSelectedInitial) {
             hasSelectedInitial = true;
@@ -1143,12 +1362,14 @@ async function initializeBackends() {
             
             showToast('未检测到可用的后端服务，请手动选择', 'warning');
             backendHeaderSelect.disabled = false;
+            syncCustomSelect(backendHeaderSelect);
         } else {
             updateBackendList();
         }
     }
     
     updateBackendButtonLabel();
+    syncCustomSelect(backendHeaderSelect);
 }
 
 // Smart auto-completion for backend URL
@@ -1221,6 +1442,7 @@ function handleCustomConfigToggle() {
 $(document).ready(() => {
     // Initialize form elements
     initializeForm();
+    initializeCustomSelects();
     
     // Check backend versions
     initializeBackends();
@@ -1249,6 +1471,13 @@ $(document).ready(() => {
             }
         });
     }
+
+    document.addEventListener('click', () => {
+        closeOtherCustomSelects(null);
+    });
+
+    window.addEventListener('resize', refreshOpenCustomSelects);
+    window.addEventListener('scroll', refreshOpenCustomSelects, { passive: true });
     
     // Add change listener for header backend selector
     if (backendHeaderSelect) {
@@ -1396,42 +1625,36 @@ $(document).ready(() => {
     });
 
     const mobileScv = document.getElementById('mobileScv');
-    const desktopScvOptions = document.querySelectorAll('input[name="scv"]');
-    if (mobileScv && desktopScvOptions.length) {
+    const desktopScv = document.getElementById('desktopScv');
+    if (mobileScv) {
         mobileScv.addEventListener('change', () => {
             updateTlsPolicyUi(mobileScv.value);
         });
     }
 
-    const checkedScv = document.querySelector('input[name="scv"]:checked');
-    updateTlsPolicyUi(checkedScv ? checkedScv.value : '');
-
-    desktopScvOptions.forEach(option => {
-        option.addEventListener('change', () => {
-            if (option.checked) {
-                updateTlsPolicyUi(option.value);
-            }
+    if (desktopScv) {
+        desktopScv.addEventListener('change', () => {
+            updateTlsPolicyUi(desktopScv.value);
         });
-    });
+    }
+
+    updateTlsPolicyUi(desktopScv ? desktopScv.value : '');
 
     const mobileUdp = document.getElementById('mobileUdp');
-    const desktopUdpOptions = document.querySelectorAll('input[name="udp"]');
-    if (mobileUdp && desktopUdpOptions.length) {
+    const desktopUdp = document.getElementById('desktopUdp');
+    if (mobileUdp) {
         mobileUdp.addEventListener('change', () => {
             updateUdpPolicyUi(mobileUdp.value);
         });
     }
 
-    const checkedUdp = document.querySelector('input[name="udp"]:checked');
-    updateUdpPolicyUi(checkedUdp ? checkedUdp.value : '');
-
-    desktopUdpOptions.forEach(option => {
-        option.addEventListener('change', () => {
-            if (option.checked) {
-                updateUdpPolicyUi(option.value);
-            }
+    if (desktopUdp) {
+        desktopUdp.addEventListener('change', () => {
+            updateUdpPolicyUi(desktopUdp.value);
         });
-    });
+    }
+
+    updateUdpPolicyUi(desktopUdp ? desktopUdp.value : '');
 
     // Close modal when clicking outside
     if (mobileAdvancedModal) {
