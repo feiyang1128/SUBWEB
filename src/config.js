@@ -111,22 +111,22 @@ export const externalConfig = [
     label: "Feiyang规则",
     options: [
       {
-        label: "智能优选-自动选择、负载均衡、AI、IPV6、cloudflare、Adblock",
+        label: "智能优选-自动/均衡/AI/IPv6/CF/去广告",
         value:
           "https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-all.yml",
       },
       {
-        label: "智能优选-自动选择、负载均衡、AI、cloudflare、Adblock",
+        label: "智能优选-自动/均衡/AI/CF/去广告",
         value:
           "https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-no6.yml",
       },
       {
-        label: "智能优选-自动选择、负载均衡、AI、IPV6、Adblock",
+        label: "智能优选-自动/均衡/AI/IPv6/去广告",
         value:
           "https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-nocf.yml",
       },
       {
-        label: "智能优选-自动选择、负载均衡、AI、Adblock",
+        label: "智能优选-自动/均衡/AI/去广告",
         value:
           "https://raw.githubusercontent.com/feiyang1128/syncFile/refs/heads/main/Mihomo/file/yml/cfg-no6nocf.yml",
       },
