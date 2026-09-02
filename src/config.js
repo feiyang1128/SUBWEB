@@ -101,8 +101,12 @@ export const backendConfig = [
 
 export const shortUrlConfig = [
   {
-    label: "d1.mk",
-    value: "https://d1.mk/short",
+    label: "v1.mk",
+    value: "https://v1.mk/short",
+  },
+  {
+    label: "suo.yt",
+    value: "https://suo.yt/short",
   },
 ];
 
